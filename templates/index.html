@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="intro">
+  <h1>How am I really doing this semester?</h1>
+  <p>Enter your current academic profile. A machine-learning model predicts your academic standing,
+     and a set of advising rules turns it into concrete next steps. GPAs use the 5.0 scale.</p>
+</section>
+
+{% set hints = {
+  "cgpa": ("0.01", "e.g. 3.45"), "last_gpa": ("0.01", "e.g. 3.20"),
+  "attendance": ("1", "e.g. 80"), "study_hours": ("0.5", "e.g. 12"),
+  "assignment_rate": ("1", "e.g. 90"), "carryovers": ("1", "e.g. 0"),
+  "course_units": ("1", "e.g. 22")
+} %}
+
+<form method="post" action="{{ url_for('advise') }}" class="card" novalidate>
+  <h2>Your profile</h2>
+  <div class="grid">
+    {% for name, rule in fields.items() %}
+    {% set lo, hi, label = rule %}
+    <label class="field {% if errors.get(name) %}has-error{% endif %}">
+      <span>{{ label }}</span>
+      <input type="number" name="{{ name }}" min="{{ lo }}" max="{{ hi }}"
+             step="{{ hints[name][0] }}" placeholder="{{ hints[name][1] }}"
+             value="{{ values.get(name, '') }}" required>
+      {% if errors.get(name) %}<small class="err">{{ errors[name] }}</small>{% endif %}
+    </label>
+    {% endfor %}
+  </div>
+
+  <details class="target" {% if values.get('target_cgpa') %}open{% endif %}>
+    <summary>Optional: what GPA do I need to reach my target?</summary>
+    <div class="grid">
+      <label class="field"><span>Units completed so far</span>
+        <input type="number" name="units_done" min="0" step="1" placeholder="e.g. 96" value="{{ values.get('units_done', '') }}"></label>
+      <label class="field"><span>Units remaining to graduate</span>
+        <input type="number" name="units_left" min="1" step="1" placeholder="e.g. 60" value="{{ values.get('units_left', '') }}"></label>
+      <label class="field"><span>Target CGPA</span>
+        <input type="number" name="target_cgpa" min="0" max="5" step="0.01" placeholder="e.g. 3.50" value="{{ values.get('target_cgpa', '') }}"></label>
+    </div>
+  </details>
+
+  <button type="submit">Get my advice</button>
+</form>
+{% endblock %}

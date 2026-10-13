@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Your advice · Academic Advisor{% endblock %}
+{% block content %}
+{% set slug = result.standing|lower|replace(' ', '-') %}
+<section class="card verdict verdict-{{ slug }}">
+  <p class="eyebrow">Predicted academic standing</p>
+  <h1>{{ result.standing }}</h1>
+  <p>Model confidence {{ '%.0f'|format(result.confidence * 100) }}% ·
+     current CGPA {{ values.cgpa }} = <strong>{{ result.class_of_degree }}</strong></p>
+
+  <div class="bars">
+    {% for cls in meta.classes %}
+    {% set p = result.probabilities.get(cls, 0) %}
+    <div class="bar-row">
+      <span>{{ cls }}</span>
+      <div class="bar"><div style="width: {{ '%.1f'|format(p * 100) }}%"></div></div>
+      <span class="pct">{{ '%.0f'|format(p * 100) }}%</span>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% if result.target %}
+<section class="card">
+  <h2>Reaching {{ '%.2f'|format(result.target.target_cgpa) }} ({{ result.target.target_class }})</h2>
+  {% if result.target.achievable and result.target.required_gpa <= 0 %}
+    <p>You're already above this target. Any passing GPA keeps you there.</p>
+  {% elif result.target.achievable %}
+    <p>You need an average GPA of <strong>{{ '%.2f'|format(result.target.required_gpa) }}</strong>
+       across your remaining units.</p>
+  {% else %}
+    <p>This target would need a GPA of {{ '%.2f'|format(result.target.required_gpa) }}, which is above 5.0,
+       so it isn't reachable with the units left. Consider the next class of degree down.</p>
+  {% endif %}
+</section>
+{% endif %}
+
+<section class="card">
+  <h2>What to do next</h2>
+  <ol class="recs">
+    {% for rec in result.recommendations %}<li>{{ rec }}</li>{% endfor %}
+  </ol>
+</section>
+
+<p><a class="button-link" href="{{ url_for('index') }}">← Try another profile</a></p>
+{% endblock %}
