@@ -92,6 +92,12 @@ curl -X POST http://127.0.0.1:5000/api/advise -H "Content-Type: application/json
 
 Returns the predicted standing, class probabilities, class of degree and recommendations.
 
+## Screenshots — tested on the web app
+
+| Input form | Advice for a struggling student | Advice for a strong student |
+|---|---|---|
+| ![form](docs/screenshots/1-input-form.png) | ![result](docs/screenshots/2-advice-result.png) | ![excellent](docs/screenshots/3-excellent-student.png) |
+
 ## Limitations
 
 The training data is synthetic (real student records are private), so the model reflects the
