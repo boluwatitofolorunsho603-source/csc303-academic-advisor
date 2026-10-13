@@ -57,7 +57,7 @@ tests, version-controlled code and a shared VS Code configuration.
 ## Run it (Windows)
 
 ```powershell
-git clone https://github.com/<your-username>/csc303-academic-advisor.git
+git clone https://github.com/boluwatitofolorunsho603-source/csc303-academic-advisor.git
 cd csc303-academic-advisor
 python -m venv .venv
 .venv\Scripts\activate
